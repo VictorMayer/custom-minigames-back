@@ -16,7 +16,8 @@ app.post('/health', async (req, res) => {
 
 // ROUTES
 app.post('/sign-up', userController.register);
+app.post('/sign-in', userController.login);
 
-app.use(serverError());
+app.use(serverError);
 
 export default app;

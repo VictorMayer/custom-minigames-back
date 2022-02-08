@@ -6,7 +6,6 @@ async function register(req, res, next) {
         const invalidBody = validateUser(req.body);
         if (invalidBody) return res.status(400).send(invalidBody);
 
-        // call services and implement coeherent return
         const result = await userService.createUser(req.body);
 
         if (result) return result;
@@ -19,8 +18,9 @@ async function register(req, res, next) {
     }
 }
 
-function login(req, res) {
-    res.send(200);
+async function login(req, res) {
+    const result = await userService.createSession;
+    res.send(result);
 }
 
 export {

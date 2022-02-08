@@ -16,11 +16,21 @@ async function saveUser(user) {
     return result;
 }
 
+async function checkEmail(email) {
+    return connection.query('SELECT * FROM users WHERE email = $1', [email]);
+}
+
+async function checkUsername(username) {
+    return connection.query('SELECT * FROM users WHERE username = $1', [username]);
+}
+
 async function getUser(id) {
     return id;
 }
 
 export {
-    saveUser,
     getUser,
+    saveUser,
+    checkEmail,
+    checkUsername,
 };

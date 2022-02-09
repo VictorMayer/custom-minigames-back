@@ -11,26 +11,57 @@ async function saveUser(user) {
         RETURNING IDENTITY;
     `, [name, username, email, password, avatar]);
 
-    if (!result.rows.length) throw new UserError('Não foi possivel cadastrar seu usuário');
+    if (!result.rows.length) throw new UserError('Não foi possivel cadastrar seu usuário', 400);
 
     return result;
 }
 
 async function checkEmail(email) {
-    return connection.query('SELECT * FROM users WHERE email = $1', [email]);
+    const result = await connection.query('SELECT * FROM users WHERE email = $1 LIMIT BY 1', [email]);
+
+    if (!result.rows.length) return true;
+
+    return false;
 }
 
 async function checkUsername(username) {
-    return connection.query('SELECT * FROM users WHERE username = $1', [username]);
+    const result = await connection.query('SELECT * FROM users WHERE username = $1 LIMIT BY 1', [username]);
+
+    if (!result.rows.length) return true;
+
+    return false;
 }
 
-async function getUser(id) {
-    return id;
+async function checkSession(id) {
+    const result = await connection.query('SELECT * FROM sessions WHERE "userId" = $1 LIMIT BY 1', [id]);
+
+    if (!result.rows.length) return false;
+
+    return result.rows[0];
+}
+
+async function getUser(data) {
+    const result = await connection.query('SELECT * FROM users WHERE username = $1 OR email = $1 LIMIT BY 1', [data]);
+
+    if (!result.rows.length) return false;
+
+    return result.rows[0];
+}
+
+async function createSession({ userId, token }) {
+    return connection.query(`
+        INSERT INTO
+            sessions ("userId", token)
+        VALUES
+            ($1, $2)
+    `, [userId, token]);
 }
 
 export {
     getUser,
     saveUser,
     checkEmail,
+    checkSession,
     checkUsername,
+    createSession,
 };

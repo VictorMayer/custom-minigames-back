@@ -4,16 +4,16 @@ import UserError from '../errors/UserError.js';
 
 function specifyError(error) {
     switch (error) {
-    case 'name': throw new UserError('Nome curto ou longo demais');
-    case 'username': throw new UserError('Usuário inválido');
-    case 'email': throw new UserError('Email inválido');
-    case 'password': throw new UserError('Senha fraca demais');
-    case 'avatar': throw new UserError('Imagem inválida');
+    case 'name': throw new UserError('Nome curto ou longo demais', 400);
+    case 'username': throw new UserError('Usuário inválido', 400);
+    case 'email': throw new UserError('Email inválido', 400);
+    case 'password': throw new UserError('Senha fraca demais', 400);
+    case 'avatar': throw new UserError('Imagem inválida', 400);
     default: break;
     }
 }
 
-function validateUser(user) {
+function validateNewUser(user) {
     const userSchema = joi.object({
         name: joi.string().min(3).max(50).required(),
         username: joi.string().alphanum().min(3).max(30).required(),
@@ -30,7 +30,25 @@ function validateUser(user) {
     return false;
 }
 
+function validateUser(user) {
+    const emailSchema = joi.object({
+        email: joi.email().required(),
+        password: joi.string().min(4).required(),
+    });
+
+    const usernameSchema = joi.object({
+        username: joi.string().alphanum().min(3).max(30).required(),
+        password: joi.string().min(4).required(),
+    });
+
+    if (usernameSchema.validate(user).error || emailSchema.validate(user).error) {
+        throw new UserError('Insuficcient data!', 400);
+    }
+
+    return false;
+}
+
 export {
-    // eslint-disable-next-line import/prefer-default-export
+    validateNewUser,
     validateUser,
 };

@@ -18,9 +18,20 @@ async function register(req, res, next) {
     }
 }
 
-async function login(req, res) {
-    const result = await userService.createSession;
-    res.send(result);
+async function login(req, res, next) {
+    try {
+        const invalidBody = validateUser(req.body);
+        if (invalidBody) return res.status(400).send(invalidBody);
+
+        const authenticated = await userService.checkLoginInfo(req.body);
+        if (!authenticated) return res.status(404).send('User and/or password invalid!');
+
+        return await userService.upsertUserSession(authenticated);
+    } catch (err) {
+        if (err.name === 'UserError') return res.status(404).send(err.message);
+
+        return next(err);
+    }
 }
 
 export {

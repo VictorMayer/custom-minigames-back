@@ -5,11 +5,9 @@ async function register(req, res, next) {
     try {
         validateNewUser(req.body);
 
-        const result = await userService.createUser(req.body);
+        await userService.createUser(req.body);
 
-        if (result) return result;
-
-        return res.send();
+        return res.sendStatus(201);
     } catch (err) {
         if (err.name === 'UserError') return res.status(409).send(err.message);
 
@@ -23,7 +21,9 @@ async function login(req, res, next) {
 
         const authenticatedUser = await userService.checkLoginInfo(req.body);
 
-        return await userService.upsertUserSession(authenticatedUser);
+        const result = await userService.upsertUserSession(authenticatedUser);
+
+        return res.send(result);
     } catch (err) {
         if (err.name === 'UserError') return res.status(err.status).send(err.message);
 

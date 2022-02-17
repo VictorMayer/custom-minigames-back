@@ -6,7 +6,7 @@ import gamesRouter from './gamesRouter.js';
 const router = Router();
 
 // STATUS CHECK
-router.post('/health', (req, res) => {
+router.get('/health', (req, res) => {
     res.send('OK!');
 });
 

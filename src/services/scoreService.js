@@ -1,4 +1,4 @@
-import ScoreError from '../errors/scoreError.js';
+import ScoreError from '../errors/ScoreError.js';
 
 import * as scoreRepository from '../repositories/scoreRepository.js';
 
@@ -11,9 +11,11 @@ async function getLeaderboard(gameId) {
 }
 
 async function getUserScore({ gameId, userId }) {
-    const result = await scoreRepository.getUserScore({ gameId, userId });
+    const score = await scoreRepository.getUserScore({ gameId, userId });
 
-    return result;
+    if (!score) throw new ScoreError('You are not in this leaderboard', 404);
+
+    return score;
 }
 
 async function upsertScore({ newScore, userId, gameId }) {

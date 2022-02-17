@@ -1,4 +1,4 @@
-import connection from '../database';
+import connection from '../database.js';
 
 async function getLeaderboard(gameId) {
     const result = await connection.query('SELECT * FROM scores WHERE "gameId" = $1', [gameId]);

@@ -21,6 +21,7 @@
             "ObjectPattern": { "multiline": true, "minProperties": 0 },
             "ImportDeclaration": "never",
             "ExportDeclaration": "always"
-        }]
+        }],
+        "max-len":"off"
     }
 }
